@@ -7,8 +7,6 @@ class User(AbstractUser, PublicModel):
     first_name = models.CharField(max_length=150, blank=False)
     middle_name = models.CharField(max_length=150, blank=False)
     last_name = models.CharField(max_length=150, blank=False)
-    phone = models.CharField(max_length=150, blank=False)
-    email = models.EmailField(unique=True, blank=False)
 
     DOCTOR = "doctor"
     PATIENT = "patient"
@@ -31,3 +29,14 @@ class User(AbstractUser, PublicModel):
 
     def __str__(self):
         return f"{self.email} ({self.role})"
+
+
+class Doctor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    speciality = models.CharField(max_length=150, blank=False)
+
+
+class Patient(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=150, blank=False)
+    email = models.EmailField(unique=True, blank=False)

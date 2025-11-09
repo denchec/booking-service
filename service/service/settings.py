@@ -31,7 +31,7 @@ environ.Env.read_env(BASE_DIR / ".env.dist")
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-e#&dnr5y$6pgnv)rg_%l=@vg^$2oxo@drweey+bahwm!4!f-6u'
+SECRET_KEY = "django-insecure-e#&dnr5y$6pgnv)rg_%l=@vg^$2oxo@drweey+bahwm!4!f-6u"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
@@ -89,14 +89,15 @@ LOGGING = {
 
 INSTALLED_APPS = [
     "users",
+    "consultations",
     "rest_framework",
     "rest_framework_simplejwt",
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
 ]
 
 # Use custom user model from apps.users
@@ -115,35 +116,34 @@ SIMPLE_JWT = {
 }
 
 
-
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'service.urls'
+ROOT_URLCONF = "service.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'service.wsgi.application'
+WSGI_APPLICATION = "service.wsgi.application"
 
 
 # Database
@@ -166,28 +166,19 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': (
-            'django.contrib.auth.password_validation.'
-            'UserAttributeSimilarityValidator'
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "UserAttributeSimilarityValidator"
         ),
     },
     {
-        'NAME': (
-            'django.contrib.auth.password_validation.'
-            'MinimumLengthValidator'
-        ),
+        "NAME": ("django.contrib.auth.password_validation." "MinimumLengthValidator"),
     },
     {
-        'NAME': (
-            'django.contrib.auth.password_validation.'
-            'CommonPasswordValidator'
-        ),
+        "NAME": ("django.contrib.auth.password_validation." "CommonPasswordValidator"),
     },
     {
-        'NAME': (
-            'django.contrib.auth.password_validation.'
-            'NumericPasswordValidator'
-        ),
+        "NAME": ("django.contrib.auth.password_validation." "NumericPasswordValidator"),
     },
 ]
 
@@ -212,13 +203,11 @@ REST_FRAMEWORK = {
 # Celery
 
 CELERY_TASK_TRACK_STARTED = True
-CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_BACKEND = "django-db"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BROKER_URL = env("BROKER_URL")
 CELERY_RESULT_EXTENDED = True
-CELERY_BEAT_SCHEDULER = (
-    'django_celery_beat.schedulers:DatabaseScheduler',
-)
+CELERY_BEAT_SCHEDULER = ("django_celery_beat.schedulers:DatabaseScheduler",)
 
 
 # Cache
@@ -237,9 +226,9 @@ CACHES = {
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
@@ -249,13 +238,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = (
-    'whitenoise.storage.CompressedManifestStaticFilesStorage',
-)
+STATICFILES_STORAGE = ("whitenoise.storage.CompressedManifestStaticFilesStorage",)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
