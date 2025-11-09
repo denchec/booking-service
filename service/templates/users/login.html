@@ -84,6 +84,26 @@
     button[type="submit"]:hover {
       background: color-mix(in oklab, CanvasText 10%, Canvas);
     }
+
+    a.button {
+      display: flex;
+      width: 93%;
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+      margin-top: 6px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid color-mix(in oklab, CanvasText 16%, transparent);
+      background: color-mix(in oklab, CanvasText 6%, Canvas);
+      color: CanvasText;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a.button:hover {
+      background: color-mix(in oklab, CanvasText 10%, Canvas);
+    }
   </style>
   {% load static %}
 </head>
@@ -108,6 +128,8 @@
       </div>
       <button type="submit">Войти</button>
     </form>
+
+    <a href="{% url 'register' %}" class="button">Зарегистрироваться</a>
   </main>
 </body>
 

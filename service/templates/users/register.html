@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Регистрация</title>
   <style>
-    :root { color-scheme: light dark; }
+    :root {
+      color-scheme: light dark;
+    }
+
     body {
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
       margin: 0;
@@ -16,6 +20,7 @@
       background: Canvas;
       color: CanvasText;
     }
+
     .card {
       width: min(520px, 92vw);
       border: 1px solid color-mix(in oklab, CanvasText 12%, transparent);
@@ -24,16 +29,37 @@
       box-shadow: 0 4px 14px color-mix(in oklab, CanvasText 10%, transparent);
       background: Canvas;
     }
+
     h1 {
       margin: 0 0 18px;
       font-size: 22px;
       font-weight: 650;
       letter-spacing: 0.2px;
     }
-    form { display: grid; gap: 14px; }
-    .row { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
-    @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
-    label { display: block; font-size: 13px; margin-bottom: 6px; }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .row {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 560px) {
+      .row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
     input[type="text"],
     input[type="email"],
     input[type="password"],
@@ -46,6 +72,7 @@
       background: Field;
       color: FieldText;
     }
+
     .error {
       margin: 0 0 8px;
       padding: 10px 12px;
@@ -55,7 +82,13 @@
       color: color-mix(in oklab, crimson 92%, Canvas);
       font-size: 14px;
     }
-    .hint { margin: 6px 0 0; font-size: 13px; opacity: .8; }
+
+    .hint {
+      margin: 6px 0 0;
+      font-size: 13px;
+      opacity: .8;
+    }
+
     button[type="submit"] {
       margin-top: 6px;
       padding: 10px 14px;
@@ -66,19 +99,24 @@
       cursor: pointer;
       font-weight: 600;
     }
+
     button[type="submit"]:hover {
       background: color-mix(in oklab, CanvasText 10%, Canvas);
     }
-    .hidden { display: none; }
+
+    .hidden {
+      display: none;
+    }
   </style>
   {% load static %}
 </head>
+
 <body>
   <main class="card" role="main">
     <h1>Регистрация</h1>
 
     {% if error %}
-      <p class="error">{{ error }}</p>
+    <p class="error">{{ error }}</p>
     {% endif %}
 
     <form method="post" novalidate>
@@ -115,7 +153,6 @@
         <select id="id_role" name="role" required>
           <option value="patient">Пациент</option>
           <option value="doctor">Врач</option>
-          <option value="admin">Администратор</option>
         </select>
         <p class="hint">Для роли «Врач» укажите специальность, для «Пациент» — телефон.</p>
       </div>
@@ -161,6 +198,5 @@
     })();
   </script>
 </body>
+
 </html>
-
-
