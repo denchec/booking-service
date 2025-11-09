@@ -6,6 +6,6 @@ router = SimpleRouter()
 router.register("", UserViewSet)
 
 urlpatterns = [
-    path("", include(router.urls)),
     path("token/", include("users.token.urls")),
+    path("", include(router.urls)),
 ]

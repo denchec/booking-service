@@ -6,7 +6,6 @@ class UserSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     middle_name = serializers.CharField()
-    phone = serializers.CharField()
     email = serializers.EmailField()
     role = serializers.CharField()
 
@@ -18,9 +17,5 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "middle_name",
-            "phone",
             "role",
-            "is_active",
-            "is_staff",
-            "is_superuser",
         ]

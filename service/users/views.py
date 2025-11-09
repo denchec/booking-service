@@ -5,6 +5,7 @@ from django.contrib import messages
 from rest_framework import viewsets
 from users.serializers import UserSerializer
 from users.models import User, Doctor, Patient
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -102,3 +103,10 @@ class RegisterView(View):
             )
 
         return redirect("login")
+
+
+class DashboardView(LoginRequiredMixin, View):
+    template_name = "users/dashboard.html"
+
+    def get(self, request):
+        return render(request, self.template_name, {"user": request.user})
