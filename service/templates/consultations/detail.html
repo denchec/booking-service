@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Детали консультации</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      min-height: 100dvh;
+      place-items: center;
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    .card {
+      width: min(760px, 94vw);
+      border: 1px solid color-mix(in oklab, CanvasText 12%, transparent);
+      border-radius: 12px;
+      padding: 24px 22px;
+      box-shadow: 0 4px 14px color-mix(in oklab, CanvasText 10%, transparent);
+      background: Canvas;
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: 22px;
+      font-weight: 650;
+      letter-spacing: 0.2px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 10px 14px;
+      font-size: 14px;
+    }
+
+    .label {
+      opacity: .8;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .button-link {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid color-mix(in oklab, CanvasText 16%, transparent);
+      background: color-mix(in oklab, CanvasText 6%, Canvas);
+      color: CanvasText;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .button-link:hover {
+      background: color-mix(in oklab, CanvasText 10%, Canvas);
+    }
+  </style>
+  {% load static %}
+</head>
+
+<body>
+  <main class="card" role="main">
+    <h1>Детали консультации</h1>
+
+    <section class="grid" aria-label="Сведения о консультации">
+      <div class="label">Клиника</div>
+      <div>{{ object.clinic.name }}</div>
+
+      <div class="label">Врач</div>
+      <div>{{ object.doctor.user.last_name }} {{ object.doctor.user.first_name }}</div>
+
+      <div class="label">Пациент</div>
+      <div>
+        {% if object.patient %}
+          {{ object.patient.user.last_name }} {{ object.patient.user.first_name }}
+        {% else %}
+          -
+        {% endif %}
+      </div>
+
+      <div class="label">Статус</div>
+      <div>{{ object.status }}</div>
+
+      <div class="label">Начало</div>
+      <div>{{ object.start_date }}</div>
+
+      <div class="label">Окончание</div>
+      <div>{{ object.end_date }}</div>
+    </section>
+
+    <div class="actions">
+      {% if can_register %}
+      <form method="post" action="{% url 'consultations:register' object.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="button-link">Записаться</button>
+      </form>
+      {% endif %}
+      <a class="button-link" href="{% url 'consultations:update' object.pk %}">Изменить</a>
+      <a class="button-link" href="{% url 'consultations:delete' object.pk %}">Удалить</a>
+      <a class="button-link" href="{% url 'consultations:list' %}">К списку</a>
+    </div>
+  </main>
+</body>
+
+</html>
+
+

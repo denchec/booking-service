@@ -24,6 +24,11 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault("is_superuser", False)
         return self._create_user(email, password, **extra_fields)
 
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        return self._create_user(email, password, **extra_fields)
+
 
 class User(AbstractUser, PublicModel):
     first_name = models.CharField(max_length=150, blank=False)
@@ -49,12 +54,21 @@ class User(AbstractUser, PublicModel):
 
     objects = UserManager()
 
+    def __str__(self):
+        return f"{self.first_name} {self.middle_name} {self.last_name}"
+
 
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     speciality = models.CharField(max_length=150, blank=False)
 
+    def __str__(self):
+        return f"{self.user}"
+
 
 class Patient(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=150, blank=False)
+
+    def __str__(self):
+        return f"{self.user}"

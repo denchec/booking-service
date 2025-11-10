@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Список консультаций</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    .container {
+      width: min(1100px, 96vw);
+      margin: 24px auto;
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: 22px;
+      font-weight: 650;
+      letter-spacing: 0.2px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .button-link {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid color-mix(in oklab, CanvasText 16%, transparent);
+      background: color-mix(in oklab, CanvasText 6%, Canvas);
+      color: CanvasText;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .button-link:hover {
+      background: color-mix(in oklab, CanvasText 10%, Canvas);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid color-mix(in oklab, CanvasText 12%, transparent);
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid color-mix(in oklab, CanvasText 12%, transparent);
+      font-size: 14px;
+    }
+
+    th {
+      background: color-mix(in oklab, CanvasText 6%, Canvas);
+      font-weight: 650;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    nav.pagination {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 14px;
+      font-size: 14px;
+    }
+  </style>
+  {% load static %}
+</head>
+
+<body>
+  <main class="container" role="main">
+    <h1>Список консультаций</h1>
+
+    <div class="actions">
+      {% if is_admin or is_doctor %}
+      <a class="button-link" href="{% url 'consultations:create' %}">Новая консультация</a>
+      {% endif %}
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="button-link">Выйти</button>
+      </form>
+
+      <form method="get" action="" style="display:flex; gap:8px; align-items:center;">
+        <input type="text" name="q" value="{{ current_q }}" placeholder="Поиск: врач или пациент"
+          style="padding:8px 10px; border-radius:8px; border:1px solid color-mix(in oklab, CanvasText 16%, transparent); background: color-mix(in oklab, CanvasText 6%, Canvas); color: CanvasText;" />
+        {% if current_sort %}
+        <input type="hidden" name="sort" value="{{ current_sort }}" />
+        {% endif %}
+        {% if current_order %}
+        <input type="hidden" name="order" value="{{ current_order }}" />
+        {% endif %}
+        {% if current_status %}
+        <input type="hidden" name="status" value="{{ current_status }}" />
+        {% endif %}
+        <button type="submit" class="button-link">Найти</button>
+        <a class="button-link" href="{% url 'consultations:list' %}">Сбросить</a>
+      </form>
+    </div>
+
+    {% if upcoming_list %}
+    <h2 style="margin: 18px 0 10px; font-size: 18px; font-weight: 650;">
+      {{ upcoming_title }}
+    </h2>
+    <table aria-label="Ближайшие консультации">
+      <thead>
+        <tr>
+          <th>Клиника</th>
+          <th>Врач</th>
+          <th>Пациент</th>
+          <th>
+            {% with cs=current_sort co=current_order %}
+            <a class="button-link"
+              href="?{% if query_without_page %}{{ query_without_page }}&{% endif %}sort=status&order={% if cs == 'status' and co == 'asc' %}desc{% else %}asc{% endif %}">Статус</a>
+            {% endwith %}
+          </th>
+          <th>
+            {% with cs=current_sort co=current_order %}
+            <a class="button-link"
+              href="?{% if query_without_page %}{{ query_without_page }}&{% endif %}sort=start_date&order={% if cs == 'start_date' and co == 'asc' %}desc{% else %}asc{% endif %}">Начало</a>
+            {% endwith %}
+          </th>
+          <th>Окончание</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in upcoming_list %}
+        <tr>
+          <td>{{ c.clinic.name }}</td>
+          <td>{{ c.doctor.user.last_name }} {{ c.doctor.user.first_name }}</td>
+          <td>
+            {% if c.patient %}
+            {{ c.patient.user.last_name }} {{ c.patient.user.first_name }}
+            {% else %}
+            -
+            {% endif %}
+          </td>
+          <td>{{ c.status }}</td>
+          <td>{{ c.start_date }}</td>
+          <td>{{ c.end_date }}</td>
+          <td>
+            <div class="row-actions">
+              {% if is_admin %}
+              <a class="button-link" href="{% url 'consultations:update' c.pk %}">Изменить</a>
+              <a class="button-link" href="{% url 'consultations:delete' c.pk %}">Удалить</a>
+              {% elif is_doctor and c.doctor.user_id == request.user.id %}
+              <a class="button-link" href="{% url 'consultations:update' c.pk %}">Изменить</a>
+              <a class="button-link" href="{% url 'consultations:delete' c.pk %}">Удалить</a>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+
+    {% if object_list %}
+    <table aria-label="Консультации">
+      <thead>
+        <tr>
+          <th>Клиника</th>
+          <th>Врач</th>
+          <th>Пациент</th>
+          <th>
+            {% with cs=current_sort co=current_order %}
+            <a class="button-link"
+              href="?{% if query_without_page %}{{ query_without_page }}&{% endif %}sort=status&order={% if cs == 'status' and co == 'asc' %}desc{% else %}asc{% endif %}">Статус</a>
+            {% endwith %}
+          </th>
+          <th>
+            {% with cs=current_sort co=current_order %}
+            <a class="button-link"
+              href="?{% if query_without_page %}{{ query_without_page }}&{% endif %}sort=start_date&order={% if cs == 'start_date' and co == 'asc' %}desc{% else %}asc{% endif %}">Начало</a>
+            {% endwith %}
+          </th>
+          <th>Окончание</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in object_list %}
+        <tr>
+          <td>{{ c.clinic.name }}</td>
+          <td>{{ c.doctor.user.last_name }} {{ c.doctor.user.first_name }}</td>
+          <td>
+            {% if c.patient %}
+            {{ c.patient.user.last_name }} {{ c.patient.user.first_name }}
+            {% else %}
+            -
+            {% endif %}
+          </td>
+          <td>{{ c.status }}</td>
+          <td>{{ c.start_date }}</td>
+          <td>{{ c.end_date }}</td>
+          <td>
+            <div class="row-actions">
+              {% if is_admin %}
+              <a class="button-link" href="{% url 'consultations:update' c.pk %}">Изменить</a>
+              <a class="button-link" href="{% url 'consultations:delete' c.pk %}">Удалить</a>
+              {% elif is_doctor and c.doctor.user_id == request.user.id %}
+              <a class="button-link" href="{% url 'consultations:update' c.pk %}">Изменить</a>
+              <a class="button-link" href="{% url 'consultations:delete' c.pk %}">Удалить</a>
+              {% endif %}
+
+              {% if is_patient and not c.patient %}
+              <form method="post" action="{% url 'consultations:register' c.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="button-link">Записаться</button>
+              </form>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% else %}
+    <p>Консультации не найдены.</p>
+    {% endif %}
+
+    {% if is_paginated %}
+    <nav class="pagination" aria-label="Постраничная навигация">
+      <div>
+        {% if page_obj.has_previous %}
+        <a class="button-link"
+          href="?{% if query_without_page %}{{ query_without_page }}&{% endif %}page={{ page_obj.previous_page_number }}">Предыдущая</a>
+        {% endif %}
+      </div>
+      <div>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</div>
+      <div>
+        {% if page_obj.has_next %}
+        <a class="button-link"
+          href="?{% if query_without_page %}{{ query_without_page }}&{% endif %}page={{ page_obj.next_page_number }}">Следующая</a>
+        {% endif %}
+      </div>
+    </nav>
+    {% endif %}
+  </main>
+</body>
+
+</html>

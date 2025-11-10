@@ -1,0 +1,62 @@
+services:
+  postgres:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file: ./service/.env
+    ports:
+      - "5436:5432"
+    restart: always
+
+  valkey:
+    image: valkey/valkey:latest
+    ports:
+      - "6379:6379"
+    env_file: ./service/.env
+    restart: always
+
+  web:
+    image: django-image:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    command: [ "sh", "-c", "python /app/service/manage.py migrate --noinput && python /app/service/manage.py collectstatic --noinput && gunicorn service.wsgi:application --bind 0.0.0.0:8000 --workers 3" ]
+    depends_on:
+      - postgres
+      - valkey
+    env_file: ./service/.env
+
+  celery:
+    image: django-image:latest
+    depends_on:
+      - postgres
+      - valkey
+    env_file: ./service/.env
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    command: [ "celery", "-A", "service", "worker", "-l", "INFO" ]
+
+  celery-beat:
+    image: django-image:latest
+    depends_on:
+      - postgres
+      - valkey
+    env_file: ./service/.env
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    command: [ "celery", "-A", "service", "beat", "--loglevel=INFO", "--scheduler=django_celery_beat.schedulers:DatabaseScheduler" ]
+
+volumes:
+  postgres_data:
+
+

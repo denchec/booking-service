@@ -44,7 +44,7 @@ if env("DEBUG_SQL"):
     SQL_LOGGER = {
         "django.db.backends": {
             "level": "DEBUG",
-            "handlers": ["file"],
+            "handlers": ["info"],
         },
     }
 
@@ -68,15 +68,9 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
-        "file": {
-            "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename": "django_queries.log",
-            "formatter": "verbose",
-        },
     },
     "root": {
-        "handlers": ["info", "file"],
+        "handlers": ["info"],
         "level": "INFO",
     },
     "loggers": {
@@ -98,6 +92,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_celery_results",
+    "django_celery_beat",
 ]
 
 # Use custom user model from apps.users
@@ -118,6 +114,7 @@ SIMPLE_JWT = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -208,7 +205,7 @@ CELERY_RESULT_BACKEND = "django-db"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BROKER_URL = env("BROKER_URL")
 CELERY_RESULT_EXTENDED = True
-CELERY_BEAT_SCHEDULER = ("django_celery_beat.schedulers:DatabaseScheduler",)
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 
 # Cache
@@ -229,7 +226,7 @@ CACHES = {
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "Europe/Moscow"
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -239,11 +236,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = ("whitenoise.storage.CompressedManifestStaticFilesStorage",)
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "static"
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# CSRF
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+]

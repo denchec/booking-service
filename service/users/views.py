@@ -1,6 +1,6 @@
 from django.views import View
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from rest_framework import viewsets
 from users.serializers import UserSerializer
@@ -14,7 +14,6 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = "public_id"
 
     def filter_queryset(self, queryset):
-        # Configure here who can manage which users
         if self.request.user.is_superuser:
             return super().filter_queryset(queryset)
 
@@ -39,7 +38,7 @@ class AuthView(View):
         user = authenticate(request, username=email, password=password)
         if user:
             login(request, user)
-            return redirect("dashboard")
+            return redirect("consultations:list")
         return render(
             request,
             self.template_name,
@@ -92,7 +91,6 @@ class RegisterView(View):
                 phone=phone,
             )
 
-        # Аутентифицируемся, чтобы у пользователя был установлен backend
         auth_user = authenticate(request, username=email, password=password)
         if auth_user is not None:
             login(request, auth_user)
@@ -110,3 +108,13 @@ class DashboardView(LoginRequiredMixin, View):
 
     def get(self, request):
         return render(request, self.template_name, {"user": request.user})
+
+
+class LogoutView(View):
+    def post(self, request):
+        logout(request)
+        return redirect("login")
+
+    def get(self, request):
+        logout(request)
+        return redirect("login")

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Панель управления</title>
+  <title>Удалить консультацию</title>
   <style>
     :root {
       color-scheme: light dark;
@@ -22,7 +22,7 @@
     }
 
     .card {
-      width: min(720px, 94vw);
+      width: min(640px, 92vw);
       border: 1px solid color-mix(in oklab, CanvasText 12%, transparent);
       border-radius: 12px;
       padding: 24px 22px;
@@ -38,17 +38,8 @@
     }
 
     .info {
-      display: grid;
-      gap: 8px;
+      margin: 10px 0 16px;
       font-size: 14px;
-      margin-top: 4px;
-    }
-
-    .divider {
-      height: 1px;
-      background: color-mix(in oklab, CanvasText 12%, transparent);
-      margin: 16px 0;
-      border: 0;
     }
 
     .actions {
@@ -57,18 +48,20 @@
       flex-wrap: wrap;
     }
 
-    .button-link {
-      display: inline-block;
+    button[type="submit"],
+    a.button-link {
       padding: 10px 14px;
       border-radius: 8px;
       border: 1px solid color-mix(in oklab, CanvasText 16%, transparent);
       background: color-mix(in oklab, CanvasText 6%, Canvas);
       color: CanvasText;
-      text-decoration: none;
+      cursor: pointer;
       font-weight: 600;
+      text-decoration: none;
     }
 
-    .button-link:hover {
+    button[type="submit"]:hover,
+    a.button-link:hover {
       background: color-mix(in oklab, CanvasText 10%, Canvas);
     }
   </style>
@@ -77,24 +70,24 @@
 
 <body>
   <main class="card" role="main">
-    <h1>Привет, {{ user.first_name }}!</h1>
+    <h1>Удалить консультацию</h1>
 
-    <section class="info" aria-label="Информация об аккаунте">
-      <div><strong>ФИО:</strong> {{ user.last_name }} {{ user.first_name }} {{ user.middle_name }}</div>
-      <div><strong>Email:</strong> {{ user.email }}</div>
-      <div><strong>Роль:</strong> {{ user.role }}</div>
-      {% if user.public_id %}
-      <div><strong>ID:</strong> {{ user.public_id }}</div>
-      {% endif %}
-    </section>
+    <p class="info">
+      Вы уверены, что хотите удалить консультацию
+      «{{ object.clinic.name }} — {{ object.doctor.user.last_name }} {{ object.doctor.user.first_name }} — {% if object.patient %}{{ object.patient.user.last_name }} {{ object.patient.user.first_name }}{% else %}-{% endif %} — {{ object.start_date }}»?
+      Это действие необратимо.
+    </p>
 
-    <hr class="divider" />
-
-    <section class="actions" aria-label="Действия">
-      <a class="button-link" href="/users/">Мой профиль (API)</a>
-    </section>
+    <form method="post">
+      {% csrf_token %}
+      <div class="actions">
+        <button type="submit">Удалить</button>
+        <a class="button-link" href="{% url 'consultations:list' %}">Отмена</a>
+      </div>
+    </form>
   </main>
 </body>
 
 </html>
+
 

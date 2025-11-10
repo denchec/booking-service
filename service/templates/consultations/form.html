@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if object and object.pk %}Редактировать консультацию{% else %}Новая консультация{% endif %}</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      min-height: 100dvh;
+      place-items: center;
+      background: Canvas;
+      color: CanvasText;
+    }
+
+    .card {
+      width: min(720px, 94vw);
+      border: 1px solid color-mix(in oklab, CanvasText 12%, transparent);
+      border-radius: 12px;
+      padding: 24px 22px;
+      box-shadow: 0 4px 14px color-mix(in oklab, CanvasText 10%, transparent);
+      background: Canvas;
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: 22px;
+      font-weight: 650;
+      letter-spacing: 0.2px;
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="datetime-local"],
+    select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid color-mix(in oklab, CanvasText 16%, transparent);
+      background: Field;
+      color: FieldText;
+    }
+
+    .error,
+    .field-errors {
+      margin: 0 0 8px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: color-mix(in oklab, crimson 18%, transparent);
+      border: 1px solid color-mix(in oklab, crimson 38%, transparent);
+      color: color-mix(in oklab, crimson 92%, Canvas);
+      font-size: 14px;
+    }
+
+    .row {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @media (max-width: 560px) {
+      .row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    button[type="submit"],
+    a.button-link {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid color-mix(in oklab, CanvasText 16%, transparent);
+      background: color-mix(in oklab, CanvasText 6%, Canvas);
+      color: CanvasText;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    button[type="submit"]:hover,
+    a.button-link:hover {
+      background: color-mix(in oklab, CanvasText 10%, Canvas);
+    }
+  </style>
+  {% load static %}
+</head>
+
+<body>
+  <main class="card" role="main">
+    <h1>{% if object and object.pk %}Редактировать консультацию{% else %}Новая консультация{% endif %}</h1>
+
+    {% if form.non_field_errors %}
+    <div class="error">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <div>
+        <label for="{{ form.clinic.id_for_label }}">Клиника</label>
+        {{ form.clinic }}
+        {% if form.clinic.errors %}<div class="field-errors">{{ form.clinic.errors }}</div>{% endif %}
+      </div>
+
+      <div>
+        <label for="{{ form.doctor.id_for_label }}">Врач</label>
+        {{ form.doctor }}
+        {% if form.doctor.errors %}<div class="field-errors">{{ form.doctor.errors }}</div>{% endif %}
+      </div>
+
+      {% if form.patient %}
+      <div>
+        <label for="{{ form.patient.id_for_label }}">Пациент</label>
+        {{ form.patient }}
+        {% if form.patient.errors %}<div class="field-errors">{{ form.patient.errors }}</div>{% endif %}
+      </div>
+      {% endif %}
+
+      {% if form.status %}
+      <div>
+        <label for="{{ form.status.id_for_label }}">Статус</label>
+        {{ form.status }}
+        {% if form.status.errors %}<div class="field-errors">{{ form.status.errors }}</div>{% endif %}
+      </div>
+      {% endif %}
+
+      <div>
+        <label for="{{ form.start_date.id_for_label }}">Начало</label>
+        {{ form.start_date }}
+        {% if form.start_date.errors %}<div class="field-errors">{{ form.start_date.errors }}</div>{% endif %}
+      </div>
+
+      {% if form.end_date %}
+      <div>
+        <label for="{{ form.end_date.id_for_label }}">Окончание</label>
+        {{ form.end_date }}
+        {% if form.end_date.errors %}<div class="field-errors">{{ form.end_date.errors }}</div>{% endif %}
+      </div>
+      {% endif %}
+
+      <div class="actions">
+        <button type="submit">{% if object and object.pk %}Сохранить{% else %}Создать{% endif %}</button>
+        <a class="button-link" href="{% url 'consultations:list' %}">Отменить</a>
+      </div>
+    </form>
+  </main>
+</body>
+
+</html>
+
+
